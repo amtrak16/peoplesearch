@@ -46,6 +46,7 @@ const initialState = {
   peopleMsg: '',
   peopleErr: false,
   peopleSelect: false,
+  peopleSelected: {}
 }
 
 class App extends Component {
@@ -56,6 +57,7 @@ class App extends Component {
     this.onPeopleIn = this.onPeopleIn.bind(this)
     this.onSbmClick = this.onSbmClick.bind(this)
     this.onPeopleClick = this.onPeopleClick.bind(this)
+    this.onBackBtn = this.onBackBtn.bind(this)
 
 }
 
@@ -72,11 +74,16 @@ class App extends Component {
   }
 
   onPeopleClick ({target}) {
-    // this.users.forEach((user) => {
-    //   if (user.id.indexOf(target.id) === -1) {
-        
-    //   }
-    // }
+    let personSelected = []
+    this.state.users.forEach((user) => {
+      if (user.id.indexOf(target.id) === -1) {return;} 
+        personSelected.push(user)
+        this.setState({peopleSelect: true, peopleSelected: user})
+    })
+  }
+
+  onBackBtn(evt) {
+    this.setState({peopleSelect: false})
   }
 
   render() {
@@ -86,6 +93,7 @@ class App extends Component {
           <h1 className="App-title">{this.props.title}</h1>
         </header>
         <p className="App-intro"></p>
+          {!this.state.peopleSelect &&
           <form class="card" onSubmit={this.onSbmClick}>
             <div>
               <div class="row">
@@ -108,19 +116,26 @@ class App extends Component {
                 </div>
               </div>
           </form>
+          }
           {this.state.peopleSelect &&
             <div class="card">
               <div class="row">
                 <div class="row">
-                  <div id="movieYear" class="large-2 columns"><span class="label small">Year: </span>{this.state.movieYear}</div>
+                  <button id="backBtn" class="large-1 columns" onClick={this.onBackBtn} >Back </button>
+                </div>
+                <div class="row">
+                  <div id="peopleName" class="large-12 columns" ><span class="label small">Name: </span>{this.state.peopleSelected.name}</div>
+                </div>
+                <div class="row">
+                  <div id="peopleCityr" class="large-2 columns"><span class="label small">City: </span>{this.state.peopleSelected.city}</div>
                   <div class="large-10 columns" ></div>
                 </div>
                 <div class="row">
-                  <div id="movieDir" class="large-6 columns" ><span class="label small">Directors: </span>{this.state.movieDir}</div>
+                  <div id="peopleInd" class="large-6 columns" ><span class="label small">Industry: </span>{this.state.peopleSelected.industry}</div>
                   <div class="large-6 columns" ></div>
                 </div>
                 <div class="row">
-                  <div id="moviePlot" class="large-12 columns" ><span class="label small">Plot: </span>{this.state.moviePlot}</div>
+                  <div id="peopleHobs" class="large-12 columns" ><span class="label small">Hobbies: </span>{this.state.peopleSelected.hobbies}</div>
                 </div>
               </div>
             </div>
@@ -135,7 +150,7 @@ class RenderPeople extends Component {
     let rows=[]
     this.props.users.forEach((user) => {
       if (user.name.indexOf(this.props.search) === -1) {return;}
-      rows.push(<p id={user.genId} onClick={this.props.onPeopleClick}>{user.name}</p>)
+      rows.push(<div id={user.id} onClick={this.props.onClick}>{user.name}</div>)
     })
   return (
     <div>{rows}</div>
